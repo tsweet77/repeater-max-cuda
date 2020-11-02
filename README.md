@@ -1,5 +1,5 @@
 # repeater-max-cuda
-The CUDA version of the Repeater MAX.
+The CUDA version of the Repeater MAX. Repeats intentions up to 500+ million times per second.
 
 Requires CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
 
