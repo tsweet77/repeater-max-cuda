@@ -39,7 +39,7 @@
 
 #include <locale.h>
 
-//#define USEGPU
+#define USEGPU
 
 using namespace std;
 using namespace std::chrono;
