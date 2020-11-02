@@ -39,7 +39,7 @@
 
 #include <locale.h>
 
-#define USEGPU
+//#define USEGPU
 
 using namespace std;
 using namespace std::chrono;
@@ -214,7 +214,9 @@ int main(int argc, char ** argv) {
     } while (1);
 	std::cout << endl << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "|" << suffix_hz(frequency_count) << "Hz): " << intention << "     " << endl << std::flush;
     
-    cudaFree(device_intention_value_array);
+	#ifdef USEGPU
+		cudaFree(device_intention_value_array);
+	#endif
 
     return 0;
 }
