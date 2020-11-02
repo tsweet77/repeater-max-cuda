@@ -4,6 +4,7 @@
 	CUDA functions by Karteek Sheri.
     Created 11/2/2020 for C++.
 	Requires: CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
+	Requires: Visual Studio 2019 Community for C++: https://visualstudio.microsoft.com/downloads/
 	Requires: Add location of cl.exe to Windows PATH.
 	To compile: nvcc intention_repeater_max_cuda.cu -O 3 -o intention_repeater_max_cuda.exe
     Repeats your intention up to 500+ million times per second to make things happen.
