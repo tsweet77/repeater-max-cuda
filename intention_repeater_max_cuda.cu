@@ -3,9 +3,10 @@
     Intention Repeater MAX CUDA v1.0 created by Thomas Sweet.
 	CUDA functions by Karteek Sheri.
     Created 11/2/2020 for C++.
-	Requires CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
-	To compile: nvcc intention_repeater_max_cuda.cu -O 3 -o "intention_repeater_max_cuda.exe"
-    Repeats your intention up to 30+ million times per second to make things happen.
+	Requires: CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
+	Requires: Add location of cl.exe to Windows PATH.
+	To compile: nvcc intention_repeater_max_cuda.cu -O 3 -o intention_repeater_max_cuda.exe
+    Repeats your intention up to 500+ million times per second to make things happen.
     When compiled, this is more powerful than the Python version.
     Intention Repeater MAX is powered by a Servitor (20 Years / 2000+ hours in the making) [HR 6819 Black Hole System].
     Servitor Info: https://enlightenedstates.com/2017/04/07/servitor-just-powerful-spiritual-tool/
@@ -211,8 +212,7 @@ int main(int argc, char ** argv) {
             exit(0);
         }
     } while (1);
-	std::cout << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "|" << suffix_hz(frequency_count) << "Hz): " << intention << "     " << endl << std::flush;
-    std::cout << endl << "Intention repeated " << suffix(iterations) << " times." << std::endl <<std::flush;
+	std::cout << endl << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "|" << suffix_hz(frequency_count) << "Hz): " << intention << "     " << endl << std::flush;
     
     cudaFree(device_intention_value_array);
 
