@@ -1,6 +1,6 @@
 
 /*
-    Intention Repeater MAX CUDA v1.2 created by Thomas Sweet.
+    Intention Repeater MAX CUDA v1.1 created by Thomas Sweet.
 	CUDA functionality by Karteek Sheri.
     Created 11/3/2020 for C++.
 	Requires: CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
@@ -148,7 +148,6 @@ void setGPU(int desiredGPU){
 #endif
 
 int main(int argc, char ** argv) {
-	std::setvbuf(stdout, NULL, _IONBF, 0); //Disable buffering to fix status display on some systems.
 
     std::string intention, intention_value, process_intention, duration, param_duration, param_intention, runtime_formatted;
     #ifndef USEGPU
@@ -179,7 +178,7 @@ int main(int argc, char ** argv) {
     std::locale comma_locale(std::locale(), new comma_numpunct());
     std::cout.imbue(comma_locale);
 
-    cout << "Intention Repeater MAX CUDA v1.2 created by Thomas Sweet." << endl;
+    cout << "Intention Repeater MAX CUDA v1.1 created by Thomas Sweet." << endl;
 	cout << "CUDA functionality by Karteek Sheri." << endl;
     cout << "This software comes with no guarantees or warranty of any kind and is for entertainment purposes only." << endl;
     cout << "Press Ctrl-C to quit." << endl << endl;

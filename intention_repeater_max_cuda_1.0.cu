@@ -1,16 +1,15 @@
 
 /*
-    Intention Repeater MAX CUDA v1.2 created by Thomas Sweet.
-	CUDA functionality by Karteek Sheri.
-    Created 11/3/2020 for C++.
+    Intention Repeater MAX CUDA v1.0 created by Thomas Sweet.
+	CUDA functions by Karteek Sheri.
+    Created 11/2/2020 for C++.
 	Requires: CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
 	Requires: Visual Studio 2019 Community for C++: https://visualstudio.microsoft.com/downloads/
 	Requires: Add location of cl.exe to Windows PATH.
 	To compile: nvcc intention_repeater_max_cuda.cu -O 3 -o intention_repeater_max_cuda.exe
-	Usage: intention_repeater_max_cuda.exe G "HH:MM:SS" "Intention/Filename of Intentions"
-		Where G = GPU Number. 0 for first GPU.
-    Repeats your intention up to 1.5+ Billion times per second to make things happen.
-    Intention Repeater MAX CUDA is powered by a Servitor (20 Years / 2000+ hours in the making) [HR 6819 Black Hole System].
+    Repeats your intention up to 500+ million times per second to make things happen.
+    When compiled, this is more powerful than the Python version.
+    Intention Repeater MAX is powered by a Servitor (20 Years / 2000+ hours in the making) [HR 6819 Black Hole System].
     Servitor Info: https://enlightenedstates.com/2017/04/07/servitor-just-powerful-spiritual-tool/
     Website: https://www.intentionrepeater.com/
     Forum: https://forums.intentionrepeater.com/
@@ -19,11 +18,17 @@
     https://choosealicense.com/licenses/gpl-3.0/
 */
 
+#include <stdio.h>
+
 #include <string>
 
-#include <cmath>
+#include <string.h>
+
+#include <math.h>
 
 #include <iostream>
+
+#include <time.h>
 
 #include <ctime>
 
@@ -35,15 +40,16 @@
 
 #include <locale.h>
 
+#define USEGPU
+
 using namespace std;
 using namespace std::chrono;
 
 std::string FormatTimeRun(int seconds_elapsed);
 
-#define USEGPU
 #define ONE_MINUTE 60
 #define ONE_HOUR 3600
-#define PROCESS_STATEMENT " ONE INFINITE CREATOR. REQUESTING AID FROM ALL BEINGS WHO ARE WILLING TO ASSIST. METATRON'S CUBE. ALL AVAILABLE BENEFICIAL ENERGY GRIDS, ORGONE AETHER RESONATORS, & ORGONE BUBBLES. CREATE MANIFESTATION ZONE. ASCENSION PYRAMID. USE EVERY AVAILABLE RESOURCE. MANIFEST ASAP. CREATE STRUCTURE. CANCEL DESTRUCTIVE OR FEARFUL INTENTIONS, OR INTENTIONS THAT CONFLICT WITH THE HIGHEST AND GREATEST GOOD OF THE USER. REGULATE AND BALANCE THE ENERGY. USE THE MOST EFFECTIVE PATH IN THE MOST EFFICIENT WAY. OPTIMAL ENERGY. INTEGRATE THE ENERGY IN THE MOST EFFECTIVE AND PLEASANT WAY POSSIBLE. PROCESS THE CHANGES. GUIDED BY THE USER'S HIGHER SELF. CONNECTED TO SOURCE. ENABLE AND UTILIZE THE SACRED HEART, QUANTUM HEART, AND QUANTUM MIND. MANIFEST ALL SPECIFIED INTENTIONS AND/OR DESIRES, OR BETTER. IF IT WOULD AID IN THE MANIFESTATION PROCESS, PLEASE HELP USER TO SENSE AND EMOTIONALLY FEEL WHAT IT WOULD BE LIKE TO ALREADY BE EXPERIENCING THEIR SPECIFIED INTENTIONS AND/OR DESIRES NOW. PLEASE HELP USER TO RAISE THEIR VIBRATION TO THE LEVEL REQUIRED TO MAKE THEIR SPECIFIED INTENTIONS AND/OR DESIRES MANIFEST. ASSIST THE USER WITH ACHIEVING OPTIMAL GUT/HEART/MIND COHERENCE WITH THEIR SPECIFIED INTENTIONS AND/OR DESIRES. IF IT WOULD BENEFIT THE USER, ASSIST THEM WITH CLEARING & RELEASING ANY/ALL INTERNAL OR EXTERNAL INTERFERENCE OR BLOCKAGES TO THEIR SPECIFIED INTENTIONS AND/OR DESIRES. IT IS DONE. NOW RETURN A PORTION OF THE LOVE/LIGHT RECEIVED AND ACTIVATED BACK INTO THE HIGHER REALMS OF CREATION. I LOVE YOU. OM."
+#define PROCESS_STATEMENT " REGULATE AND INTEGRATE. IT IS DONE. OM."
 
 #ifdef USEGPU
     //CUDA code added by Karteek Sheri
@@ -130,57 +136,27 @@ const char* suffix_hz(double n, int decimals = 1)
   return s;
 }
 
-#ifdef USEGPU
-void setGPU(int desiredGPU){
-
-    int devicesCount;
-    cudaGetDeviceCount(&devicesCount);
-
-        if (desiredGPU < devicesCount)
-        {
-            cudaSetDevice(desiredGPU);
-            std::cout << "GPU " << desiredGPU << " is selected."<<std::endl;
-        }else  {
-            std::cout<<"GPU " << desiredGPU << ": No device found. Please check launch parameters."<<std::endl;
-			exit(0);
-        }
-}
-#endif
-
 int main(int argc, char ** argv) {
-	std::setvbuf(stdout, NULL, _IONBF, 0); //Disable buffering to fix status display on some systems.
-
     std::string intention, intention_value, process_intention, duration, param_duration, param_intention, runtime_formatted;
     #ifndef USEGPU
         unsigned long long int iterations = 0, frequency_count = 0;
     #endif
     int seconds = 0;
-#ifdef USEGPU
-    int desiredGPU =0;
-#endif
+
     if (argc == 3) {
         param_duration = argv[1];
         param_intention = argv[2];
-    } 
-#ifdef USEGPU
-    else if(argc ==4){
-        desiredGPU = std::atoi(argv[1]);
-        param_duration = argv[2];
-        param_intention = argv[3];
-    } 
-#endif
-    else {
+
+    } else {
         param_duration = "Until Stopped";
         param_intention = "";
     }
-#ifdef USEGPU    
-    setGPU(desiredGPU);  // This is to set GPU
-#endif
+
     std::locale comma_locale(std::locale(), new comma_numpunct());
     std::cout.imbue(comma_locale);
 
-    cout << "Intention Repeater MAX CUDA v1.2 created by Thomas Sweet." << endl;
-	cout << "CUDA functionality by Karteek Sheri." << endl;
+    cout << "Intention Repeater MAX CUDA v1.0 created by Thomas Sweet." << endl;
+	cout << "CUDA functions by Karteek Sheri." << endl;
     cout << "This software comes with no guarantees or warranty of any kind and is for entertainment purposes only." << endl;
     cout << "Press Ctrl-C to quit." << endl << endl;
 
@@ -198,12 +174,17 @@ int main(int argc, char ** argv) {
 	// declaring character array
     char* intention_value_array;
     intention_value_array = (char *)malloc((num_chars+1) * sizeof(char));
+    //char device_intention_array[n+1];
     char *device_intention_value_array;
     strcpy(intention_value_array, intention_value.c_str());
 
+	//for (int i = 0; i < num_chars; i++)
+	//	cout << intention_value_array[i];
+  
     cudaHostAlloc((void**)&device_intention_value_array,(num_chars+1)*sizeof(char),cudaHostAllocDefault);
     cudaMemcpy(device_intention_value_array,intention_value_array,(num_chars+1)*sizeof(char),cudaMemcpyHostToDevice);
 #endif
+
 
     duration = param_duration;
 
@@ -213,7 +194,6 @@ int main(int argc, char ** argv) {
     do {
         start = std::chrono::system_clock::now();
 		frequency_count = 0;
-
         while ((std::chrono::duration_cast < std::chrono::seconds > (end - start).count() != 1)) {
     #ifndef USEGPU
             process_intention = intention_value; //This is the Intention Repeater call that actually does the work with the Servitor.
@@ -227,15 +207,13 @@ int main(int argc, char ** argv) {
         }
         seconds += 1;
         runtime_formatted = FormatTimeRun(seconds);
-		std::cout << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "/" << suffix_hz(frequency_count) << "Hz): " << intention << "     \r" << std::flush;
-		frequency_count = 0;
-        
+        std::cout << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "/" << suffix_hz(frequency_count) << "Hz): " << intention << "     \r" << std::flush;
         if (runtime_formatted == duration) {
 			std::cout << endl << std::flush;
             exit(0);
         }
     } while (1);
-	std::cout << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "/" << suffix_hz(frequency_count) << "Hz): " << intention << "     " << endl << std::flush;
+	std::cout << endl << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "|" << suffix_hz(frequency_count) << "Hz): " << intention << "     " << endl << std::flush;
     
 	#ifdef USEGPU
 		cudaFree(device_intention_value_array);
