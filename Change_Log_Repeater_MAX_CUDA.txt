@@ -1,0 +1,5 @@
+Repeater MAX CUDA Change Log
+
+11/2/2020 v1.0 Created.
+11/3/2020 v1.1 Allowed selection of GPU.
+11/3/2020 v1.2 Fixed some bugs. Turned off output buffering for status display.
