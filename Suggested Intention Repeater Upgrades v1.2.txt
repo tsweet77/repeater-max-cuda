@@ -1,0 +1,56 @@
+What Thomas Sweet (Anthro Shaman aka Anthro Teacher) will need next month (December 2020) regarding the Intention Repeater Project for version 2.0 of Repeater MAX and Repeater MAX CUDA.
+
+1) Add capability to choose frequency of run (Hz, kHz, MHz, GHz, THz, PHz) for intention_repeater_max_cuda.cu and intention_repeater_max.cpp.
+	a) It needs to be close to precise frequency. If they choose 10kHz, don't put all 10k iterations in the first microsecond. They should be spread out evenly each second.
+
+2) See if there is a better way of updating status each second than: while ((std::chrono::duration_cast < std::chrono::seconds > (end - start).count() != 1))
+
+3) Add optional flags to intention_repeater_max_cuda.cu, where they specify values after.
+	a) -gpu
+	b) -freq
+	c) -mag
+	d) -dur
+	e) -intent
+	f) -? or -help
+
+-gpu flag = GPU Number. Default = 0. If no CUDA GPU exists, exit gracefully with a message and manage memory if needed.
+-freq flag = Frequency. Example 528.0. If it's 0 or more than capacity, run at full speed. Default (if unspecified) = full speed.
+-mag flag = Magnitude. Specify either Hz, kHz, MHz, GHz, THz, or PHz. It is case insensitive. Default (if unspecified) = full speed.
+-dur flag = Duration. Example "00:01:00" to run for one minute. Default (if unspecified) = "Until Stopped".
+-intent flag = Intention. Default (if unspecified) =  prompts user for intent.
+-? or -help flag = Display help with options for running.
+
+Example automated usage: intention_repeater_max_cuda.exe -gpu 0 -freq 528.0 -mag MHz -dur "00:01:00" -intent "I am calm."
+Default usage: intention_repeater_max_cuda.exe
+
+4) Make CUDA version only for GPUs (remove non-GPU stuff). The regular Intention Repeater MAX is for CPU.
+
+5) Add optional flags to intention_repeater_max.cpp (after it is made multithreaded), where they specify values after.
+	a) -cpus
+	b) -freq
+	c) -mag
+	d) -dur
+	e) -intent
+	f) -? or -help
+
+-cpus flag = Number of CPUs or Threads to use. Default = One less than # of CPUs available. Or whatever is best to keep from locking up their system.
+-freq flag = Frequency. Example 528.0. If it's 0 or more than capacity, run at full speed. Default = full speed.
+-mag flag = Magnitude. Specify either Hz, kHz, MHz, GHz, THz, or PHz. It is case insensitive. Default = full speed.
+-dur flag = Duration. Example "00:01:00" to run for one minute. Default (if unspecified) = "Until Stopped".
+-intent flag = Intention. Default (if unspecified) =  prompts user for intent.
+-? or -help flag = Display help with options for running.
+
+Example automated usage: intention_repeater_max.exe -cpus 7 -freq 528.0 -mag MHz -dur "00:01:00" -intent "I am calm."
+Default usage: intention_repeater_max.exe
+
+6) Look into: cloud-hosted GPU Jupyter Notebook. It is open-source and used by data scientists.
+
+7) Investigate possible refactoring to see if it can improve the running.
+
+8) Research best compile options/flags for CUDA GPU and CPU versions.
+
+9) Suggest any other optimations you can think of. We're going for fastest run speed and highest frequency range. Idealy if we can hit 80+ GHz, that would be great. On a GTX 1060 we are getting 1.7GHz on CUDA version.
+
+10) This will be used to repeat an intention at specific frequencies such as 111.0kHz, so being as close to that as possible would be great.
+
+11) See if we can do it without needing an iterations counter and get rid of the frequency counter and use average frequency: iterations/seconds.
