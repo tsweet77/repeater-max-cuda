@@ -4,3 +4,4 @@ Repeater MAX CUDA Change Log
 11/3/2020 v1.1 Allowed selection of GPU.
 11/3/2020 v1.2 Fixed some bugs. Turned off output buffering for status display.
 11/4/2020 v1.3 Removed frequency_count for each second and just use average iterations/seconds. Doubled the speed.
+11/5/2020 v1.4 Repeating the intention string up to limit of 1024 bytes each iteration. "I am love." repeats about 103 times each iteration.
