@@ -6,7 +6,7 @@ What Thomas Sweet (Anthro Shaman aka Anthro Teacher) will need next month (Decem
 2) See if there is a better way of updating status each second than: while ((std::chrono::duration_cast < std::chrono::seconds > (end - start).count() != 1))
 
 3) Add optional flags to intention_repeater_max_cuda.cu, where they specify values after.
-	a) -gpu
+	a) -gpu or -gpunum
 	b) -freq or -frequency
 	c) -mag or -magnitude
 	d) -dur or -duration
@@ -55,4 +55,5 @@ Default usage: intention_repeater_max.exe
 
 11) See if we can do it without needing an iterations counter and get rid of the frequency counter and use average frequency: iterations/seconds.
 
-12) Check this post, and see what may be bottlenecking the GPU. 3 different GPUs are reporting limit of 1.7GHz: https://forums.intentionrepeater.com/t/new-repeater-max-cuda-most-powerful-version/540/78?u=anthroteacher
+12) Check this post and posts after. 3 different GPUs are reporting limit of 1.7GHz: https://forums.intentionrepeater.com/t/new-repeater-max-cuda-most-powerful-version/540/78?u=anthroteacher
+	Will the RTX 3090 be limited by the MHz of the GPU?
