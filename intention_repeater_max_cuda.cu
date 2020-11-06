@@ -8,7 +8,7 @@
 	To compile: nvcc intention_repeater_max_cuda.cu -O 3 -o intention_repeater_max_cuda.exe
 	Usage: intention_repeater_max_cuda.exe G "HH:MM:SS" "Intention/Filename of Intentions"
 		Where G = GPU Number. 0 for first GPU.
-    Repeats your intention up to 1.5+ Billion times per second to make things happen.
+    Repeats your intention up to 100+ Billion times per second to make things happen.
     Intention Repeater MAX CUDA is powered by a Servitor (20 Years / 2000+ hours in the making) [HR 6819 Black Hole System].
     Servitor Info: https://enlightenedstates.com/2017/04/07/servitor-just-powerful-spiritual-tool/
     Website: https://www.intentionrepeater.com/
