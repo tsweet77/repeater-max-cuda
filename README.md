@@ -2,6 +2,8 @@
 
 You probably want intention_repeater_max_cuda.cu
 
+Repeater_MAX_CUDA.ipynb is for Google Colab.
+
 The CUDA version of the Repeater MAX. Repeats intentions up to 500+ PHz.
 
 Requires Visual Studio 2019 Community for C++: https://visualstudio.microsoft.com/downloads/
