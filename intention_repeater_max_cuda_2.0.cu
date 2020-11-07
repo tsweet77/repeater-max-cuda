@@ -280,7 +280,7 @@ int main(int argc, char ** argv) {
 		} i++;
 	}
     //cout<<param_duration<<" "<<ref_rate<<" "<<ram_size_value<<endl;             
-    unsigned long long int INTENTION_MULTIPLIER = (ram_size_value*1024*1024*512/2);
+    unsigned long long int INTENTION_MULTIPLIER = (ram_size_value*1024*1024*512);
 
     std::locale comma_locale(std::locale(), new comma_numpunct());
     std::cout.imbue(comma_locale);
