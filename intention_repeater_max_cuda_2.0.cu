@@ -352,6 +352,7 @@ int main(int argc, char ** argv) {
             ++seconds;
             runtime_formatted = FormatTimeRun(seconds);
             std::cout << "[" + runtime_formatted + "]" << " (" << suffix(iterations) << "/" << suffix_hz(frequency_count) << "Hz): " << intention << "     \r" << std::flush;
+			frequency_count = 0;
             if (runtime_formatted == duration) {
                 std::cout << endl << std::flush;
                 #ifdef USEGPU
