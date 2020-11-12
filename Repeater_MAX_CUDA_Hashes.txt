@@ -1,0 +1,8 @@
+PowerShell Hashes
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_2.1.exe | Format-List
+
+
+Algorithm : SHA256
+Hash      : CA4F04C842605D98EE45A68EA483582F0F875E8AF8663EA553B4E0425849720F
+Path      : E:\Repeater\gitHub\repeater-max-cuda-main\intention_repeater_max_cuda_2.1.exe
