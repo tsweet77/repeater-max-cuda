@@ -6,6 +6,8 @@ Repeater_MAX_CUDA.ipynb is for Google Colab.
 
 The CUDA version of the Repeater MAX. Repeats intentions up to 1.5+ EHz.
 
+Verify .exe integrity with: Repeater_MAX_CUDA_Hashes.txt
+
 Requires Visual Studio 2019 Community for C++: https://visualstudio.microsoft.com/downloads/
 
 and CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
