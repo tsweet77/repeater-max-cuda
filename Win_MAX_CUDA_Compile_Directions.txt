@@ -1,0 +1,7 @@
+Directions for compiling Intention Repeater MAX CUDA in Windows:
+
+Requires: Visual Studio 2019 Community for C++: https://visualstudio.microsoft.com/downloads/
+Requires: CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
+Requires: Add location of cl.exe to Windows PATH.
+
+To compile: nvcc intention_repeater_max_cuda.cu -O 3 -o intention_repeater_max_cuda.exe
