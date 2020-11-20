@@ -7,3 +7,4 @@ Repeater MAX CUDA Change Log
 11/5/2020 v1.4 Repeating the intention string up to limit of 1024 bytes each iteration. "I am love." repeats about 103 times each iteration.
 11/7/2020 v2.0 Flags added by Karteek Sheri. Intention multiplying by Thomas Sweet.
 11/12/2020 v2.1 Added exponential notation by Karteek Sheri.
+11/16/2020 v2.2 Added flag to choose either exponential notation or Hz designator (ex. PHz).
