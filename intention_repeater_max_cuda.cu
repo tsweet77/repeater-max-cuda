@@ -1,7 +1,7 @@
 /*
-    Intention Repeater MAX CUDA v2.1 created by Thomas Sweet.
+    Intention Repeater MAX CUDA v2.2 created by Thomas Sweet.
 	CUDA, benchmark and flags functionality by Karteek Sheri.
-    Created 11/12/2020 for C++.
+    Created 11/16/2020 for C++.
 	Requires: Visual Studio 2019 Community for C++: https://visualstudio.microsoft.com/downloads/
 	Requires: CUDA Toolkit: https://developer.nvidia.com/cuda-toolkit
 	Requires: Add location of cl.exe to Windows PATH.
@@ -38,6 +38,8 @@
 #include <iterator>
 
 #include <sstream>
+
+#include <algorithm>
 
 using namespace std;
 using namespace std::chrono;
@@ -142,6 +144,34 @@ const char * suffix_hz(unsigned long long int n, int decimals = 1) {
     return s;
 }
 
+std::string display_suffix(std::string num, int power, std::string designator)
+{
+	std::string s;
+	if (designator == "Iterations")
+	{
+		char iterations_suffix_array[] = { ' ', 'k', 'M', 'B', 'T', 'q', 'Q', 's', 'S' };
+		//cout << "Power: " << power << endl;
+		s = iterations_suffix_array[int(power/3)];
+	} else //designator == "Frequency"
+	{
+		char frequency_suffix_array[] = { ' ', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y' };
+		//cout << "Power: " << power << endl;
+		s = frequency_suffix_array[int(power/3)];
+	}
+	
+	std::string str2 = num.substr (0, power % 3 + 1) + "." + num.substr (power % 3 + 1, 3) + s;
+	
+	/*
+	cout << endl;
+	cout << "Num: " << num << endl;
+	cout << "Power: " << power << endl;
+	cout << "str2: " << str2 << endl;
+	*/
+	
+	//cout << str2 << endl;
+	return str2;
+}
+
 #ifdef USEGPU
 void setGPU(int desiredGPU) {
 
@@ -190,7 +220,7 @@ std::string FormatTimeRun(int seconds_elapsed) {
 }
 
 void print_help() {
-	cout << "Intention Repeater MAX CUDA v2.1 (c)2020 Thomas Sweet aka Anthro Teacher." << endl;
+	cout << "Intention Repeater MAX CUDA v2.2 (c)2020 Thomas Sweet aka Anthro Teacher." << endl;
 	cout << "CUDA and flags functionality by Karteek Sheri." << endl;
 	cout << "Intention multiplying functionality by Thomas Sweet." << endl << endl;
 
@@ -199,15 +229,17 @@ void print_help() {
 	cout << "	b) --dur or -d" << endl;
 	cout << "	c) --imem or -m" << endl;
 	cout << "	d) --intent or -i" << endl;
-	cout << "	e) --help" << endl << endl;
+	cout << "	e) --suffix or -s" << endl;
+	cout << "	f) --help" << endl << endl;
 
 	cout << "--gpu = GPU # to use. Default = 0." << endl;
-	cout << "--dur = Duration in HH:MM:SS format. Example 00:01:00 to run for one minute. Default = \"Until Stopped.\"" << endl;
+	cout << "--dur = Duration in HH:MM:SS format. Example \"00:01:00\" to run for one minute. Default = \"Until Stopped.\"" << endl;
 	cout << "--imem = Specify how many GB of GPU RAM to use. Default = 1.0. Higher amount produces a faster repeat rate, but takes longer to load into memory." << endl;
 	cout << "--intent = Intention. Default = Prompt the user for intention." << endl;
+	cout << "--suffix = Specify Hz or Exp. Exp = Exponent (ex. 1.313x10^15). Hz (ex. 1.313PHz). Default = Hz" << endl;
 	cout << "--help = Display this help." << endl << endl;
 
-	cout << "Example automated usage: intention_repeater_max_cuda.exe --gpu 0 --dur 00:01:00 --imem 1.0 --intent \"I am calm.\"" << endl;
+	cout << "Example automated usage: intention_repeater_max_cuda.exe --gpu 0 --dur \"00:01:00\" --imem 1.0 --suffix hz --intent \"I am calm.\"" << endl;
 	cout << "Default usage: intention_repeater_max_cuda.exe" << endl << endl;
 
 	cout << "gitHub Repository: https://github.com/tsweet77/repeater-max-cuda" << endl;
@@ -265,7 +297,7 @@ std::string findsum(std::string a, std::string b){
 int main(int argc, char ** argv) {
     //std::setvbuf(stdout, NULL, _IONBF, 0); //Disable buffering to fix status display on some systems.
 
-    std::string intention, ref_rate, intention_value, process_intention, duration, param_duration, param_intention, runtime_formatted;
+    std::string intention, ref_rate, intention_value, process_intention, duration, param_duration, param_intention, runtime_formatted, suffix_value="";
 
     #ifndef USEGPU
     unsigned long long int iterations = 0;
@@ -304,6 +336,11 @@ int main(int argc, char ** argv) {
         }else if(!strcmp(argv[i], "-i") || !strcmp(argv[i], "--intent")){
 			
             param_intention = argv[i+1];
+			
+		}else if(!strcmp(argv[i], "-s") || !strcmp(argv[i], "--suffix")){
+			
+            suffix_value = argv[i+1];
+			std::transform(suffix_value.begin(), suffix_value.end(),suffix_value.begin(), ::toupper);
 		
         }else{
 			if(i == argc-1){
@@ -318,7 +355,7 @@ int main(int argc, char ** argv) {
     //std::locale comma_locale(std::locale(), new comma_numpunct());
     //std::cout.imbue(comma_locale);
 	
-    cout << "Intention Repeater MAX CUDA v2.1 created by Thomas Sweet aka Anthro Teacher." << endl;
+    cout << "Intention Repeater MAX CUDA v2.2 created by Thomas Sweet aka Anthro Teacher." << endl;
     cout << "CUDA and flags functionality by Karteek Sheri." << endl;
 	cout << "Intention multiplying functionality by Thomas Sweet." << endl;
     cout << "This software comes with no guarantees or warranty of any kind and is for entertainment purposes only." << endl;
@@ -391,8 +428,15 @@ int main(int argc, char ** argv) {
             int digits = iterations_string.length();
             int freq_digits = iterations_string_freq.length();
 
-            std::cout<< "[" + runtime_formatted + "]" << " (" <<setprecision(3)<<fixed<<(stoull(iterations_string.substr(0,4)))/pow(10,3)<<"x10^"<<digits-1<<" / "<<(stoull(iterations_string_freq.substr(0,4))/pow(10,3))<<"x10^"<<freq_digits-1<<" Hz): "<<intention<<"     \r" << std::flush;
-            iterations =0;
+			if (suffix_value == "EXP")
+			{
+				std::cout<< "[" + runtime_formatted + "]" << " (" <<setprecision(3)<<fixed<<(stoull(iterations_string.substr(0,4)))/pow(10,3)<<"x10^"<<digits-1<<" / "<<(stoull(iterations_string_freq.substr(0,4))/pow(10,3))<<"x10^"<<freq_digits-1<<" Hz): "<<intention<<"     \r" << std::flush;
+            }  else //suffix_value = "HZ"
+			{
+				std::cout<< "[" + runtime_formatted + "]" << " (" <<display_suffix(iterations_string,digits-1,"Iterations")<<" / "<<display_suffix(iterations_string_freq,freq_digits-1,"Frequency")<<"Hz): "<<intention<<"     \r" << std::flush;
+			}
+			
+			iterations =0;
             
             if (runtime_formatted == duration) {
                 std::cout << endl << std::flush;

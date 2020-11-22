@@ -233,13 +233,13 @@ void print_help() {
 	cout << "	f) --help" << endl << endl;
 
 	cout << "--gpu = GPU # to use. Default = 0." << endl;
-	cout << "--dur = Duration in HH:MM:SS format. Example 00:01:00 to run for one minute. Default = \"Until Stopped.\"" << endl;
+	cout << "--dur = Duration in HH:MM:SS format. Example \"00:01:00\" to run for one minute. Default = \"Until Stopped.\"" << endl;
 	cout << "--imem = Specify how many GB of GPU RAM to use. Default = 1.0. Higher amount produces a faster repeat rate, but takes longer to load into memory." << endl;
 	cout << "--intent = Intention. Default = Prompt the user for intention." << endl;
 	cout << "--suffix = Specify Hz or Exp. Exp = Exponent (ex. 1.313x10^15). Hz (ex. 1.313PHz). Default = Hz" << endl;
 	cout << "--help = Display this help." << endl << endl;
 
-	cout << "Example automated usage: intention_repeater_max_cuda.exe --gpu 0 --dur 00:01:00 --imem 1.0 --suffix hz --intent \"I am calm.\"" << endl;
+	cout << "Example automated usage: intention_repeater_max_cuda.exe --gpu 0 --dur \"00:01:00\" --imem 1.0 --suffix hz --intent \"I am calm.\"" << endl;
 	cout << "Default usage: intention_repeater_max_cuda.exe" << endl << endl;
 
 	cout << "gitHub Repository: https://github.com/tsweet77/repeater-max-cuda" << endl;
