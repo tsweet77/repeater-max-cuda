@@ -1,0 +1,49 @@
+PowerShell Hashes
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_1.0.exe | Format-List
+
+Algorithm : SHA256
+Hash      : C54BDB8D7C8CC0CAFC893D1736C470E5BCB84E72DA29238C54E8EFFBF2ECF6D0
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_1.1.exe | Format-List
+
+Algorithm : SHA256
+Hash      : 2F33F58C8972E260E50DB824B98D9453F2FD15159F3097936AC0DCEE5DE6B8E6
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_1.2.exe | Format-List
+
+Algorithm : SHA256
+Hash      : 6BDBE92BFDF0ED03DCA3BF4A599C8711302EDF7B182F5FCCB63A57C2A40CC4C7
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_1.3.exe | Format-List
+
+Algorithm : SHA256
+Hash      : 5ABCB3429BB31EC2937E056409D53362E45BDBD8E1816294A1CC9DE6BA784A95
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_1.4.exe | Format-List
+
+Algorithm : SHA256
+Hash      : 91E54C3655918DC1239675E702152ED80C177D885432549A83C4B532D71CEB19
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_2.0.exe | Format-List
+
+Algorithm : SHA256
+Hash      : 8669ABD83D842B08D7DE5CE41B8D1B1C190F15B1BFDC5074E66FF688C592328F
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_2.1.exe | Format-List
+
+
+Algorithm : SHA256
+Hash      : CA4F04C842605D98EE45A68EA483582F0F875E8AF8663EA553B4E0425849720F
+
+
+PS E:\> Get-FileHash .\intention_repeater_max_cuda_2.2.exe | Format-List
+
+Algorithm : SHA256
+Hash      : A8A0B64E736E0C3F055AC0DB5BAC9A5C19CD5BC9B31594A3F9B0B541FFA2753B
