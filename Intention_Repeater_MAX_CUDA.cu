@@ -1,7 +1,7 @@
 /*
-    Intention Repeater MAX CUDA v5.19 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
+    Intention Repeater MAX CUDA v5.22 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
     Updated 4/5/2024 by Anthro Teacher and Claude 3 Opus.
-    To compile: nvcc Intention_Repeater_MAX_CUDA.cu -o Intention_Repeater_MAX_CUDA.exe -L/Users/tswee/miniconda3/Library/lib -lz
+    To compile: nvcc -O3 Intention_Repeater_MAX_CUDA.cu -o Intention_Repeater_MAX_CUDA.exe -L/Users/tswee/miniconda3/Library/lib -lz
     Repeats your intention up to 100 PHz to make things happen.
     For help: intention_repeater_max_cuda.exe --help
     Intention Repeater MAX CUDA is powered by a Servitor (20 Years / 2000+ hours in the making) [HR 6819 Black Hole System].
@@ -35,7 +35,7 @@ std::atomic<bool> interrupted(false);
 
 void signalHandler(int signum)
 {
-    std::cout << "\nInterrupt signal (" << signum << ") received.\n";
+    //std::cout << "\nInterrupt signal (" << signum << ") received.\n";
     interrupted.store(true);
 }
 
@@ -53,6 +53,8 @@ __global__ void intentionRepeaterKernel(const char *intentionMultiplied, unsigne
 #include <windows.h>
 #elif __linux__
 #include <sys/sysinfo.h>
+#elif __APPLE__
+#include <sys/sysctl.h>
 #endif
 
 #include "picosha2.h"
@@ -61,31 +63,7 @@ __global__ void intentionRepeaterKernel(const char *intentionMultiplied, unsigne
 constexpr int ONE_MINUTE = 60;
 constexpr int ONE_HOUR = 3600;
 
-#ifndef _WIN32
-#ifndef _COLORS_
-#define _COLORS_
-
-#define DEFAULT "\x1b[0m"
-#define DARKGRAY "\x1b[1;30m"
-#define BLACK "\x1b[0;30m"
-#define LIGHTRED "\x1b[1;31m"
-#define RED "\x1b[0;31m"
-#define LIGHTGREEN "\x1b[1;32m"
-#define GREEN "\x1b[0;32m"
-#define LIGHTYELLOW "\x1b[1;33m"
-#define YELLOW "\x1b[0;33m"
-#define LIGHTBLUE "\x1b[1;34m"
-#define BLUE "\x1b[0;34m"
-#define LIGHTMAGENTA "\x1b[1;35m"
-#define MAGENTA "\x1b[0;35m"
-#define LIGHTCYAN "\x1b[1;36m"
-#define CYAN "\x1b[0;36m"
-#define WHITE "\x1b[1;37m"
-#define LIGHTGRAY "\x1b[0;37m"
-
-#endif // _COLORS_
-
-#else
+#ifdef _WIN32
 HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
 constexpr int BLACK = 0;
@@ -106,7 +84,43 @@ constexpr int LIGHTYELLOW = 14;
 constexpr int LIGHTGRAY = 15;
 
 const char *enum2str[] = {"BLACK", "BLUE", "GREEN", "CYAN", "RED", "MAGENTA", "YELLOW", "WHITE", "DARKGRAY", "LIGHTBLUE", "LIGHTGREEN", "LIGHTCYAN", "LIGHTRED", "LIGHTMAGENTA", "LIGHTYELLOW", "LIGHTGRAY"};
-#endif // _WIN32
+#elif __APPLE__
+#define DEFAULT "\033[0m"
+#define DARKGRAY "\033[1;30m"
+#define BLACK "\033[0;30m"
+#define LIGHTRED "\033[1;31m"
+#define RED "\033[0;31m"
+#define LIGHTGREEN "\033[1;32m"
+#define GREEN "\033[0;32m"
+#define LIGHTYELLOW "\033[1;33m"
+#define YELLOW "\033[0;33m"
+#define LIGHTBLUE "\033[1;34m"
+#define BLUE "\033[0;34m"
+#define LIGHTMAGENTA "\033[1;35m"
+#define MAGENTA "\033[0;35m"
+#define LIGHTCYAN "\033[1;36m"
+#define CYAN "\033[0;36m"
+#define WHITE "\033[1;37m"
+#define LIGHTGRAY "\033[0;37m"
+#else
+#define DEFAULT "\033[0m"
+#define DARKGRAY "\033[1;30m"
+#define BLACK "\033[0;30m"
+#define LIGHTRED "\033[1;31m"
+#define RED "\033[0;31m"
+#define LIGHTGREEN "\033[1;32m"
+#define GREEN "\033[0;32m"
+#define LIGHTYELLOW "\033[1;33m"
+#define YELLOW "\033[0;33m"
+#define LIGHTBLUE "\033[1;34m"
+#define BLUE "\033[0;34m"
+#define LIGHTMAGENTA "\033[1;35m"
+#define MAGENTA "\033[0;35m"
+#define LIGHTCYAN "\033[1;36m"
+#define CYAN "\033[0;36m"
+#define WHITE "\033[1;37m"
+#define LIGHTGRAY "\033[0;37m"
+#endif
 
 const std::string HSUPLINK_FILE = "HSUPLINK.TXT";
 
@@ -144,6 +158,20 @@ unsigned long long int get_ninety_percent_free_memory()
     unsigned long long freePhysMem = memInfo.freeram;
     freePhysMem *= memInfo.mem_unit;
     free_memory = static_cast<unsigned long long>(freePhysMem * 0.9); // 90% of free memory
+#elif __APPLE__
+    // macOS-specific memory information
+    int mib[2];
+    int64_t physical_memory;
+    size_t length;
+
+    mib[0] = CTL_HW;
+    mib[1] = HW_MEMSIZE;
+    length = sizeof(int64_t);
+    sysctl(mib, 2, &physical_memory, &length, NULL, 0);
+
+    unsigned long long totalPhysMem = static_cast<unsigned long long>(physical_memory);
+    unsigned long long freePhysMem = totalPhysMem * 0.9; // 90% of total memory
+    free_memory = freePhysMem;
 #else
     std::cerr << "Unsupported operating system" << std::endl;
     return static_cast<unsigned long long>(-1); // Return max value to indicate error
@@ -367,7 +395,7 @@ void create_nesting_files()
 void print_help()
 {
     const std::string helpText = R"(
-Intention Repeater MAX CUDA v5.19 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
+Intention Repeater MAX CUDA v5.22 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
 This utility repeats your intention millions of times per second, in computer memory, to aid in manifestation.
 Performance benchmark, exponents and flags by Karteek Sheri.
 Holo-Link framework by Mystic Minds. This implementation by Anthro Teacher.
@@ -678,7 +706,7 @@ int main(int argc, char **argv)
     std::string param_intention, param_intention_2, param_boostlevel, param_color;
     std::string param_usehololink, runtime_formatted, ref_rate;
     std::string suffix_value = "HZ", HSUPLINK_FILE, param_restevery, param_restfor;
-    std::string param_compress, param_hashing, useHashing, useCompression, intention_hashed;
+    std::string param_compress, param_hashing, useHashing, useCompression, intention_hashed, file_contents = "";
     std::string totalIterations = "0", totalFreq = "0", param_file = "X", intention_display = "", loading_message = "LOADING INTO MEMORY...";
     unsigned long long int multiplier = 0;
     unsigned long long int hashMultiplier = 0, freq = 0;
@@ -878,28 +906,62 @@ int main(int argc, char **argv)
     std::locale comma_locale(std::locale(), new comma_numpunct());
     std::cout.imbue(comma_locale);
 
-    std::cout << "Intention Repeater MAX CUDA v5.19 (c)2020-2024" << std::endl;
+    std::cout << "Intention Repeater MAX CUDA v5.22 (c)2020-2024" << std::endl;
     std::cout << "by Anthro Teacher aka Thomas Sweet." << std::endl
               << std::endl;
 
-    if (param_file == "X" && param_boostlevel == "0" && param_usehololink == "NO")
+    if (param_file != "X" && param_boostlevel == "0" && param_usehololink == "NO")
+    {
+        // Open param_intent file and read the full file contents into intention
+        readFileContents(param_file, file_contents);
+        intention_display = "Contents of: " + param_file;
+    }
+    
+    if (param_boostlevel == "0" && param_usehololink == "NO")
     {
         if (param_intention == "X")
         {
-            std::cout << "Intention: ";
-            std::getline(std::cin, intention);
+            while (!interrupted)
+            {
+                std::cout << "Enter your Intention: ";
+                if (!std::getline(std::cin, intention))
+                {
+                    // If getline fails (e.g., due to an interrupt), break out of the loop immediately
+                    interrupted.store(true); // Ensure the flag is set if not already
+                    return 0;
+                }
+
+                if (!intention.empty())
+                {
+                    break; // Successfully got an intention, exit the loop
+                }
+                else if (!interrupted)
+                {
+                    // Only show the message if we're not interrupted
+                    std::cout << "The intention cannot be empty. Please try again.\n";
+                }
+            }
             intention_display = intention;
+            intention_value = intention;
         }
         else
         {
             intention = param_intention;
-            intention_display = intention;
+            intention_value = intention;
+            intention_display = param_intention;
         }
     }
-    else if (param_boostlevel == "0" && param_usehololink == "NO")
+
+    if (param_file != "X" && param_boostlevel == "0" && param_usehololink == "NO")
     {
-        readFileContents(param_file, intention);
-        intention_display = "Contents of: " + param_file;
+        //std::cout << "intention.length(): " << intention.length() << " file_contents.length(): " << file_contents.length() << "intention_value: " << intention_value << std::endl;
+        // Keep adding intention_value onto intention until its length is >= length of file_contents
+        while (intention.length() < file_contents.length())
+        {
+            intention += intention_value;
+        }
+        intention += file_contents;
+        intention_display += " (" + param_file + ")";
     }
 
     if (INTENTION_MULTIPLIER > 0)
@@ -930,28 +992,44 @@ int main(int argc, char **argv)
         multiplier = 1;
     }
 
-    if (param_hashing == "X")
+    if (!interrupted && param_hashing == "X")
     {
         std::cout << "Use Hashing (y/N): ";
-        std::getline(std::cin, useHashing);
-        std::transform(useHashing.begin(), useHashing.end(), useHashing.begin(), ::tolower);
+        if (!std::getline(std::cin, useHashing))
+        {
+            interrupted.store(true);
+            if (interrupted)
+            {
+                // std::cerr << "Interrupted during hashing input. Exiting configuration.\n";
+                return 0;
+            }
+        }
+        transform(useHashing.begin(), useHashing.end(), useHashing.begin(), ::tolower);
     }
-    else
+    else if (!interrupted)
     {
         useHashing = param_hashing;
-        std::transform(useHashing.begin(), useHashing.end(), useHashing.begin(), ::tolower);
+        transform(useHashing.begin(), useHashing.end(), useHashing.begin(), ::tolower);
     }
 
-    if (param_compress == "X")
+    if (!interrupted && param_compress == "X")
     {
         std::cout << "Use Compression (y/N): ";
-        std::getline(std::cin, useCompression);
-        std::transform(useCompression.begin(), useCompression.end(), useCompression.begin(), ::tolower);
+        if (!std::getline(std::cin, useCompression))
+        {
+            interrupted.store(true);
+            if (interrupted)
+            {
+                // std::cerr << "Interrupted during compression input. Exiting configuration.\n";
+                return 0;
+            }
+        }
+        transform(useCompression.begin(), useCompression.end(), useCompression.begin(), ::tolower);
     }
-    else
+    else if (!interrupted)
     {
         useCompression = param_compress;
-        std::transform(useCompression.begin(), useCompression.end(), useCompression.begin(), ::tolower);
+        transform(useCompression.begin(), useCompression.end(), useCompression.begin(), ::tolower);
     }
 
     if (multiplier > 0)
@@ -1070,7 +1148,7 @@ int main(int argc, char **argv)
                       << "Hz): " << intention_display << "     \r" << std::flush;
         }
 
-        if (runtime_formatted == duration)
+        if (runtime_formatted == duration || interrupted)
         {
             std::cout << std::endl
                       << std::flush;

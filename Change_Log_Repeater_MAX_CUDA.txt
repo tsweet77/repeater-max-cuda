@@ -10,3 +10,4 @@ Repeater MAX CUDA Change Log
 11/16/2020 v2.2 Added flag to choose either exponential notation or Hz designator (ex. PHz).
 4/5/2024 v5.18 Revamped based on MAX 5.18.
 4/9/2024 v5.19 Updated to fix missing displayed intention when running Holo-Link.
+4/21/2024 v5.22 Updated to allow intention and file to be used together.
