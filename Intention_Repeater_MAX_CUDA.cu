@@ -1,5 +1,5 @@
 /*
-    Intention Repeater MAX CUDA v5.22 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
+    Intention Repeater MAX CUDA v5.24 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
     Updated 4/5/2024 by Anthro Teacher and Claude 3 Opus.
     To compile: nvcc -O3 Intention_Repeater_MAX_CUDA.cu -o Intention_Repeater_MAX_CUDA.exe -L/Users/tswee/miniconda3/Library/lib -lz
     Repeats your intention up to 100 PHz to make things happen.
@@ -395,7 +395,7 @@ void create_nesting_files()
 void print_help()
 {
     const std::string helpText = R"(
-Intention Repeater MAX CUDA v5.22 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
+Intention Repeater MAX CUDA v5.24 (c)2020-2024 by Anthro Teacher aka Thomas Sweet.
 This utility repeats your intention millions of times per second, in computer memory, to aid in manifestation.
 Performance benchmark, exponents and flags by Karteek Sheri.
 Holo-Link framework by Mystic Minds. This implementation by Anthro Teacher.
@@ -417,7 +417,8 @@ Optional Flags:
  m) --compress or -x
  n) --hashing or -g
  o) --file or -f
- p) --help or -h
+ p) --file2 or -f2
+ q) --help or -h
 
 --dur = Duration in HH:MM:SS format. Default = Run until stopped manually.
 --imem = Specify how many GB of System RAM to use. Higher amount repeats faster, but takes longer to load. Default = 1.0.
@@ -433,7 +434,8 @@ Optional Flags:
 --restfor = # of Seconds to rest for each rest period.
 --compress = Use compression Default n.
 --hashing = Use hashing. Default n.
---file = Specify file to use if applicable. Will override intention.
+--file = Specify file to use if applicable.
+--file2 = Specify second file to use if applicable.
 --help = Display this help.
 
 Example usage:
@@ -705,8 +707,8 @@ int main(int argc, char **argv)
     std::string intention, process_intention, intention_value, duration, param_duration;
     std::string param_intention, param_intention_2, param_boostlevel, param_color;
     std::string param_usehololink, runtime_formatted, ref_rate;
-    std::string suffix_value = "HZ", HSUPLINK_FILE, param_restevery, param_restfor;
-    std::string param_compress, param_hashing, useHashing, useCompression, intention_hashed, file_contents = "";
+    std::string suffix_value = "HZ", HSUPLINK_FILE, param_restevery, param_restfor, param_file2 = "X";
+    std::string param_compress, param_hashing, useHashing, useCompression, intention_hashed;
     std::string totalIterations = "0", totalFreq = "0", param_file = "X", intention_display = "", loading_message = "LOADING INTO MEMORY...";
     unsigned long long int multiplier = 0;
     unsigned long long int hashMultiplier = 0, freq = 0;
@@ -801,6 +803,10 @@ int main(int argc, char **argv)
         else if (!strcmp(argv[i], "-f") || !strcmp(argv[i], "--file"))
         {
             param_file = argv[i + 1];
+        }
+        else if (!strcmp(argv[i], "-f2") || !strcmp(argv[i], "--file2"))
+        {
+            param_file2 = argv[i + 1];
         }
     }
 
@@ -906,32 +912,29 @@ int main(int argc, char **argv)
     std::locale comma_locale(std::locale(), new comma_numpunct());
     std::cout.imbue(comma_locale);
 
-    std::cout << "Intention Repeater MAX CUDA v5.22 (c)2020-2024" << std::endl;
+    std::cout << "Intention Repeater MAX CUDA v5.24 (c)2020-2024" << std::endl;
     std::cout << "by Anthro Teacher aka Thomas Sweet." << std::endl
               << std::endl;
 
-    if (param_file != "X" && param_boostlevel == "0" && param_usehololink == "NO")
-    {
-        // Open param_intent file and read the full file contents into intention
-        readFileContents(param_file, file_contents);
-        intention_display = "Contents of: " + param_file;
-    }
-    
+    std::string file_contents_original, file_contents, file_contents2_original, file_contents2, intention_original;
+
     if (param_boostlevel == "0" && param_usehololink == "NO")
     {
-        if (param_intention == "X")
+        if (param_intention == "X" && param_file == "X" && param_file2 == "X")
         {
             while (!interrupted)
             {
                 std::cout << "Enter your Intention: ";
-                if (!std::getline(std::cin, intention))
+                if (!std::getline(std::cin, intention_original))
                 {
                     // If getline fails (e.g., due to an interrupt), break out of the loop immediately
                     interrupted.store(true); // Ensure the flag is set if not already
                     return 0;
                 }
 
-                if (!intention.empty())
+                //std::cout << "Intention_original: " << intention_original << " intention_original.empty() " << intention_original.empty() << std::endl;
+
+                if (!intention_original.empty())
                 {
                     break; // Successfully got an intention, exit the loop
                 }
@@ -941,33 +944,76 @@ int main(int argc, char **argv)
                     std::cout << "The intention cannot be empty. Please try again.\n";
                 }
             }
-            intention_display = intention;
-            intention_value = intention;
+            //intention_value = intention_original;
         }
         else
         {
-            intention = param_intention;
-            intention_value = intention;
-            intention_display = param_intention;
+            if (param_intention != "X") {
+                intention_original = param_intention;
+                intention = intention_original;
+            }
+            //intention_value = param_intention;
+            intention_display = intention_original;
         }
+    }
+
+    if (!intention_original.empty()) {
+        intention = intention_original;
     }
 
     if (param_file != "X" && param_boostlevel == "0" && param_usehololink == "NO")
     {
-        //std::cout << "intention.length(): " << intention.length() << " file_contents.length(): " << file_contents.length() << "intention_value: " << intention_value << std::endl;
-        // Keep adding intention_value onto intention until its length is >= length of file_contents
-        while (intention.length() < file_contents.length())
-        {
-            intention += intention_value;
-        }
-        intention += file_contents;
-        intention_display += " (" + param_file + ")";
+        // Open param_intent file and read the full file contents into intention
+        readFileContents(param_file, file_contents_original);
+        //intention_display += "Contents of: ";
     }
+    if (param_file2 != "X" && param_boostlevel == "0" && param_usehololink == "NO")
+    {
+        // Open param_intent file and read the full file contents into intention
+        readFileContents(param_file2, file_contents2_original);
+        //intention_display = "Contents of: ";
+    }
+
+    size_t length1 = file_contents_original.size();
+    size_t length2 = file_contents2_original.size();
+    size_t length3 = intention_original.size();
+
+    size_t max_length = (std::max)({length1, length2, length3});
+
+    if (intention_original != "" && intention_original != "X" && param_boostlevel == "0" && param_usehololink == "NO")
+    {
+        // Normalize intention
+        while ((intention.length() + length3) < max_length)
+        {
+            intention += intention_original;
+        }
+        intention_display = intention_original;
+    }
+
+    if (param_file != "X" && param_boostlevel == "0" && param_usehololink == "NO")
+    {
+        // Normalize file_contents
+        while ((file_contents.length() + length1) < max_length)
+        {
+            file_contents += file_contents_original;
+        }
+        intention_display += "(" + param_file + ")";
+    }
+    if (param_file2 != "X" && param_boostlevel == "0" && param_usehololink == "NO")
+    {
+        // Normalize file_contents2
+        while ((file_contents2.length() + length2) < max_length)
+        {
+            file_contents2 += file_contents2_original;
+        }
+        intention_display += "(" + param_file2 + ")";
+    }
+
+    intention += file_contents + file_contents2;
+    intention_value = intention;
 
     if (INTENTION_MULTIPLIER > 0)
     {
-        // ...
-
         std::cout << loading_message << std::endl;
         std::string temp = intention;
 
